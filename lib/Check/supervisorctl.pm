@@ -28,6 +28,8 @@ our $VERSION = '0.0.1';
 
 =head2 new
 
+d
+
 =cut
 
 sub new {
@@ -112,7 +114,51 @@ sub new {
 	return $self;
 } ## end sub new
 
+=pod
+
 =head2 run
+
+This runs it.
+
+    my $results=$check_supervisorctl->run;
+
+    use Data::Dumper;
+    print Dumper($results);
+    exit($results->{exit});
+
+The returned data is as below.
+
+    - .configs[] :: A array of configs found.
+
+    - .configs_not_running[] :: A array of configs present but not running.
+
+    - .config_missing[] :: A array of running items was found, but no matchingly named config was found.
+
+    - .config_check :: If it was told to check the configs or not for matching names.
+
+    - .config_dir :: The config dir to check.
+
+    - .config_ignored[] :: Array of configs ignored.
+
+    - .config_ignore :: Configs asked to be ignored.
+
+    - .exit :: Nagios style exit value.
+
+    - .status.$name :: Status of each item.
+
+    - .total :: Number of configured items.
+
+    - .ignored[] :: A array of ignored configs.
+
+    - .ignore :: A array of items asked to be ignored.
+
+    - .config_dir_missing :: If the config dir is missing.
+
+    - .config_dir_readable :: If the config dir is readable.
+
+    - .status_list.$status :: A hash of the various statuses with keys being arrays of items for that status.
+
+    - .results[] :: A descriptive a array of the results of the check.
 
 =cut
 
@@ -129,23 +175,11 @@ sub run {
 		config_ignore       => sort( %{ $self->{config_ignore} } ),
 		exit                => 0,
 		status              => {},
-		total               => 0,
-		config_totals       => 0,
 		ignored             => [],
 		ignore              => sort( keys( %{ $self->{ignore} } ) ),
 		config_dir_missing  => 0,
 		config_dir_readable => 1,
-		status_count        => {
-			stopped  => 0,
-			starting => 0,
-			running  => 0,
-			backoff  => 0,
-			stopping => 0,
-			exited   => 0,
-			fatal    => 0,
-			unknown  => 0,
-		},
-		status_list => {
+		status_list         => {
 			stopped  => [],
 			starting => [],
 			running  => [],
@@ -184,14 +218,15 @@ sub run {
 								. $name . ', '
 								. $status
 						);
-						$to_return->{status_count}{$status}++;
 					} ## end if ( defined( $self->{status_mapping}{$status...}))
 				} ## end else [ if ( $self->{ignore}{$name} ) ]
 			} ## end if ( defined($status) && defined($name) )
 		} ## end else [ if ( defined( $self->{ignore}{$name} ) ) ]
 	} ## end foreach my $line (@output_split)
 
+	# check the config dir only if asked to
 	if ( $self->{config_check} ) {
+		# handling for if it does not exist
 		if ( -d $self->{config_dir} ) {
 			my @dir_entries;
 			eval { @dir_entries = read_dir( $self->{config_dir} ); };
@@ -201,9 +236,13 @@ sub run {
 					$to_return->{exit} = $self->{config_dir_nonreadable_val};
 				}
 			}
+			# if it was readable, process it
 			if ( $to_return->{config_dir_readable} ) {
+				# a lookup hash of found configs
 				my %configs;
+				# process each dir entry
 				foreach my $entry ( sort(@dir_entries) ) {
+					# only process items ending in .conf and that are a file.
 					if ( $entry =~ /\.conf$/ && -f $self->{config_dir} . '/' . $entry ) {
 						$entry = s/\.conf$//;
 						if ( $self->{ config_ignore { $entry } } ) {
@@ -253,7 +292,10 @@ sub run {
 
 } ## end sub run
 
+=pod
+
 =head1 AUTHOR
+
 Zane C. Bowers-Hadley, C<< <vvelox at vvelox.net> >>
 
 =head1 BUGS

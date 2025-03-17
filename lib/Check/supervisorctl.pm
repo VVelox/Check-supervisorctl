@@ -28,7 +28,45 @@ our $VERSION = '0.0.1';
 
 =head2 new
 
-d
+Initiates the object.
+
+    - status_mapping :: A hash of status mapping values.
+        default :: {
+                stopped => 2,
+                stopped => 2,
+                starting => 0,
+                running  => 0,
+                backoff  => 2,
+                stopping => 2,
+                exited   => 2,
+                fatal    => 2,
+                unknown  => 2,
+            }
+
+    - not_running_val :: Value for if it a config is not running.
+        default :: 2
+
+    - config_missing_val :: Value for if it a config is missing for a running item.
+        default :: 2
+
+    - config_dir_missing_val :: Value for if it the config dir is not present.
+        default :: 3
+
+    - config_dir_nonreadable_val :: Value for if it the config dir is not readable.
+        default :: 3
+
+    - config_check :: Boolean for if it should check the configs or not.
+        default :: 0
+
+    - ignore :: A array of running items to ignore.
+        default :: []
+
+    - config_ignore :: A array of configs to ignore.
+        default :: []
+
+    - config_dir :: Config dir path.
+        default :: /usr/local/etc/supervisord/conf.d
+        default Linux :: /etc/supervisord/conf.d
 
 =cut
 
@@ -66,6 +104,47 @@ sub new {
 	if ( $^O eq 'linux' ) {
 		$self->{config_dir} = '/etc/supervisord/conf.d';
 	}
+
+	# read in ignore settings
+	if ( defined( $opts{ignore} ) ) {
+		if ( ref( $opts{ignore} ) ne 'ARRAY' ) {
+			die( '$opts{ignore} not a ref type of ARRAY but "' . ref( $opts{ignore} ) . '"' );
+		}
+		foreach my $to_ignore ( @{ $opts{ignore} } ) {
+			if ( ref($to_ignore) ne '' ) {
+				die( 'array $opts{ignore} contains a item that is not of ref type "" but ' . ref($to_ignore) );
+			}
+			$self->{ignore}{$to_ignore} = 1;
+		}
+	} ## end if ( defined( $opts{ignore} ) )
+
+	# read in config ignore settings
+	if ( defined( $opts{config_ignore} ) ) {
+		if ( ref( $opts{config_ignore} ) ne 'ARRAY' ) {
+			die( '$opts{config_ignore} not a ref type of ARRAY but "' . ref( $opts{config_ignore} ) . '"' );
+		}
+		foreach my $to_ignore ( @{ $opts{config_ignore} } ) {
+			if ( ref($to_ignore) ne '' ) {
+				die( 'array $opts{config_ignore} contains a item that is not of ref type "" but ' . ref($to_ignore) );
+			}
+			$self->{config_ignore}{$to_ignore} = 1;
+		}
+	} ## end if ( defined( $opts{config_ignore} ) )
+
+	# read in other status settings
+	my @other_status
+		= ( 'not_running_val', 'config_missing_val', 'config_dir_missing_val', 'config_dir_nonreadable_val' );
+	foreach my $to_read_in (@other_status) {
+		if ( defined( $opts{$to_read_in} ) ) {
+			if ( ref( $opts{$to_read_in} ) ne '' ) {
+				die( '$opts{' . $to_read_in . '} not a ref type of "" not "' . ref( $opts{to_read_in} ) . '"' );
+			}
+			if ( $opts{$to_read_in} !~ /^[0123]$/ ) {
+				die( '$opts{' . $to_read_in . '} is not 0, 1, 2, or 3, but "' . $opts{$to_read_in} . '"' );
+			}
+			$self->{$to_read_in} = $opts{$to_read_in};
+		}
+	} ## end foreach my $to_read_in (@other_status)
 
 	# read in any specified status mappings and
 	if ( defined( $opts{status_mapping} ) ) {

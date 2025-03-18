@@ -335,8 +335,8 @@ sub run {
 								push(
 									@{ $to_return->{results} },
 									$self->{val_to_string}{ $self->{not_running_val} }
-										. ' - non-running config '
-										. $entry
+										. ' - non-running config "'
+										. $entry . '"'
 								);
 								if ( $to_return->{exit} < $self->{not_running_val} ) {
 									$to_return->{exit} = $self->{not_running_val};

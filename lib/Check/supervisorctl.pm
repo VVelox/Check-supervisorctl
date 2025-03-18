@@ -408,6 +408,10 @@ You can also look for information at:
 
 L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Check-supervisorctl>
 
+=item * Github issue tracker (report bugs here)
+
+L<https://github.com/VVelox/Check-supervisorctl/issues>
+
 =item * CPAN Ratings
 
 L<https://cpanratings.perl.org/d/Check-supervisorctl>

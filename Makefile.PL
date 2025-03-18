@@ -19,11 +19,20 @@ my %WriteMakefileArgs = (
 		'Test::More' => '0',
 	},
 	PREREQ_PM => {
-		'JSON'        => 0,
 		'File::Slurp' => 0,
 	},
-	dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-	clean => { FILES    => 'Check-supervisorctl-*' },
+	dist       => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+	clean      => { FILES    => 'Check-supervisorctl-*' },
+	META_MERGE => {
+		"meta-spec" => { version => 2 },
+		resources   => {
+			repository => {
+				type => 'git',
+				url  => 'git@github.com:VVelox/Check-supervisorctl.git',
+				web  => 'https://github.com/VVelox/Check-supervisorctl',
+			},
+		},
+	}
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker

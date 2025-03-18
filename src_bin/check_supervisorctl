@@ -47,7 +47,7 @@ foreach my $status_mapping (@status) {
 	}
 } ## end foreach my $status_mapping (@status)
 
-my $checker->new(
+my $checker = Check::supervisorctl->new(
 	config_ignore              => \@config_ignore,
 	ignore                     => \@ignore,
 	status_mapping             => \%status_mappings,

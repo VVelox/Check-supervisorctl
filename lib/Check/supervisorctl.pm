@@ -342,14 +342,14 @@ sub run {
 									$to_return->{exit} = $self->{not_running_val};
 								}
 							} else {
-								push( @{ $to_return->{results} }, 'OK - config ' . $entry );
+								push( @{ $to_return->{results} }, 'OK - config present for ' . $entry );
 							}
 						} ## end else [ if ( $self->{config_ignore}{$entry} ) ]
 
 					} ## end if ( $entry =~ /\.conf$/ && -f $self->{config_dir...})
 				} ## end foreach my $entry ( sort(@dir_entries) )
 				foreach my $running ( keys( %{ $to_return->{status} } ) ) {
-					if ( $configs{$running} ) {
+					if ( ! $configs{$running} ) {
 						push( @{ $to_return->{config_missing} }, $running );
 						push(
 							@{ $to_return->{results} },

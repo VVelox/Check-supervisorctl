@@ -285,7 +285,7 @@ sub run {
 					push( @{ $to_return->{ignored} }, $name );
 					push( @{ $to_return->{results} }, 'IGNORED - ' . $name . ', ' . $status );
 				} else {
-					if ( $self->{status_mapping}{$status} ) {
+					if ( defined( $self->{status_mapping}{$status} ) ) {
 						if ( $to_return->{exit} < $self->{status_mapping}{$status} ) {
 							$to_return->{exit} = $self->{status_mapping}{$status};
 						}
@@ -297,7 +297,7 @@ sub run {
 								. $name . ', '
 								. $status
 						);
-					} ## end if ( $self->{status_mapping}{$status} )
+					} ## end if ( defined( $self->{status_mapping}{$status...}))
 				} ## end else [ if ( $self->{ignore}{$name} ) ]
 			} ## end else [ if ( defined( $self->{ignore}{$name} ) ) ]
 		} ## end if ( defined($status) && defined($name) )
@@ -369,6 +369,7 @@ sub run {
 		}
 	} ## end if ( $self->{config_check} )
 
+	return $to_return;
 } ## end sub run
 
 =pod

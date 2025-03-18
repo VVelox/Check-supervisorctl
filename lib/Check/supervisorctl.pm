@@ -323,7 +323,7 @@ sub run {
 				foreach my $entry ( sort(@dir_entries) ) {
 					# only process items ending in .conf and that are a file.
 					if ( $entry =~ /\.conf$/ && -f $self->{config_dir} . '/' . $entry ) {
-						$entry = s/\.conf$//;
+						$entry =~ s/\.conf$//;
 						if ( $self->{config_ignore}{$entry} ) {
 							push( @{ $to_return->{config_ignored} }, $entry );
 							push( @{ $to_return->{results} },        'IGNORED - config ' . $entry );

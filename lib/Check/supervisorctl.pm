@@ -251,11 +251,11 @@ sub run {
 		config_check        => $self->{config_check},
 		config_dir          => $self->{config_dir},
 		config_ignored      => [],
-		config_ignore       => sort( keys( %{ $self->{config_ignore} } ) ),
+		config_ignore       => [ sort( keys( %{ $self->{config_ignore} } ) ) ],
 		exit                => 0,
 		status              => {},
 		ignored             => [],
-		ignore              => sort( keys( %{ $self->{ignore} } ) ),
+		ignore              => [ sort( keys( %{ $self->{ignore} } ) ) ],
 		config_dir_missing  => 0,
 		config_dir_readable => 1,
 		status_list         => {

@@ -349,14 +349,13 @@ sub run {
 					} ## end if ( $entry =~ /\.conf$/ && -f $self->{config_dir...})
 				} ## end foreach my $entry ( sort(@dir_entries) )
 				foreach my $running ( keys( %{ $to_return->{status} } ) ) {
+					# only check if it is missing as we already check if a running item exists for a config previously
 					if ( ! $configs{$running} ) {
 						push( @{ $to_return->{config_missing} }, $running );
 						push(
 							@{ $to_return->{results} },
 							$self->{val_to_string}{ $self->{not_running_val} } . ' - missing config ' . $running
 						);
-					} else {
-						push( @{ $to_return->{results} }, 'OK - config present for ' . $running );
 					}
 				} ## end foreach my $running ( keys( %{ $to_return->{status...}}))
 

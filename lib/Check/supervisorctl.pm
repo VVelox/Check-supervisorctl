@@ -97,12 +97,12 @@ sub new {
 		config_check               => 0,
 		ignore                     => {},
 		config_ignore              => {},
-		config_dir                 => '/usr/local/etc/supervisord/conf.d',
+		config_dir                 => '/usr/local/etc/supervisor/conf.d',
 	};
 	bless $self;
 
 	if ( $^O eq 'linux' ) {
-		$self->{config_dir} = '/etc/supervisord/conf.d';
+		$self->{config_dir} = '/etc/supervisor/conf.d';
 	}
 
 	# read in ignore settings

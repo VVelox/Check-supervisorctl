@@ -277,6 +277,7 @@ sub run {
 	foreach my $line (@output_split) {
 		my ( $name, $status ) = split( /\s+/, $line );
 		if ( defined($status) && defined($name) ) {
+			$status = lc($status);
 			if ( defined( $self->{ignore}{$name} ) ) {
 				push( @{ $to_return->{ignored} }, $name );
 			} else {
@@ -284,8 +285,7 @@ sub run {
 					push( @{ $to_return->{ignored} }, $name );
 					push( @{ $to_return->{results} }, 'IGNORED - ' . $name . ', ' . $status );
 				} else {
-					$status = lc($status);
-					if ( defined( $self->{status_mapping}{$status} ) ) {
+					if ( $self->{status_mapping}{$status} ) {
 						if ( $to_return->{exit} < $self->{status_mapping}{$status} ) {
 							$to_return->{exit} = $self->{status_mapping}{$status};
 						}
@@ -297,7 +297,7 @@ sub run {
 								. $name . ', '
 								. $status
 						);
-					} ## end if ( defined( $self->{status_mapping}{$status...}))
+					} ## end if ( $self->{status_mapping}{$status} )
 				} ## end else [ if ( $self->{ignore}{$name} ) ]
 			} ## end else [ if ( defined( $self->{ignore}{$name} ) ) ]
 		} ## end if ( defined($status) && defined($name) )

@@ -5,3 +5,60 @@ use strict;
 use Getopt::Long qw(:config no_ignore_case);
 use Pod::Usage;
 use Check::supervisorctl;
+
+my $help;
+my $version;
+my $config_dir;
+my $check_config;
+my @config_ignore;
+my @ignore;
+my @status;
+GetOptions(
+	'version' => \$version,
+	'v'       => \$version,
+	'help'    => \$help,
+	'h'       => \$help,
+	'f=s'     => \$config_dir,
+	'c'       => \$check_config,
+	'd'       => \@config_ignore,
+	'i=s'     => \@ignore,
+	's=s'     => @status,
+);
+
+my %status_mappings;
+my $not_in_that_hash = {
+	'not_running_val'            => 1,
+	'config_missing_val'         => 1,
+	'config_dir_missing_val'     => 1,
+	'config_dir_nonreadable_val' => 1,
+
+};
+my %not_in_hash_hash;
+foreach my $status_mapping (@status) {
+	$status_mapping =~ s/[\ \t]+//g;
+	my ( $status, $mapping ) = split( /\=/, $status_mapping );
+	if ( defined($status) && defined($mapping) ) {
+		if ( !$not_in_that_hash->{$status} ) {
+			$status_mappings{$status} = $mapping;
+		} else {
+			$not_in_hash_hash{$status} = $mapping;
+		}
+
+	}
+} ## end foreach my $status_mapping (@status)
+
+my $checker->new(
+	config_ignore              => \@config_ignore,
+	ignore                     => \@ignore,
+	status_mapping             => \%status_mappings,
+	not_running_val            => $not_in_hash_hash{not_running_val},
+	config_missing_val         => $not_in_hash_hash{config_missing_val},
+	config_dir_missing_val     => $not_in_hash_hash{config_dir_missing_val},
+	config_dir_nonreadable_val => $not_in_hash_hash{config_dir_nonreadable_val},
+);
+
+my $results = $checker->run;
+
+print join( "\n", @{ $results->{results} } ) . "\n";
+
+exit( $results->{exit} );

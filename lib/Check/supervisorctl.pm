@@ -350,7 +350,7 @@ sub run {
 				} ## end foreach my $entry ( sort(@dir_entries) )
 				foreach my $running ( keys( %{ $to_return->{status} } ) ) {
 					# only check if it is missing as we already check if a running item exists for a config previously
-					if ( ! $configs{$running} ) {
+					if ( !$configs{$running} ) {
 						push( @{ $to_return->{config_missing} }, $running );
 						push(
 							@{ $to_return->{results} },

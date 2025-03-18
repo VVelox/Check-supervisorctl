@@ -251,7 +251,7 @@ sub run {
 		config_check        => $self->{config_check},
 		config_dir          => $self->{config_dir},
 		config_ignored      => [],
-		config_ignore       => sort( %{ $self->{config_ignore} } ),
+		config_ignore       => sort( keys( %{ $self->{config_ignore} } ) ),
 		exit                => 0,
 		status              => {},
 		ignored             => [],
@@ -275,11 +275,11 @@ sub run {
 	my @output_split = split( /\n/, $output );
 
 	foreach my $line (@output_split) {
-		my ( $name, $status ) = /^(\S+)\s(\S+)\s*/;
-		if ( defined( $self->{ignore}{$name} ) ) {
-			push( @{ $to_return->{ignored} }, $name );
-		} else {
-			if ( defined($status) && defined($name) ) {
+		my ( $name, $status ) = split( /\s+/, $line );
+		if ( defined($status) && defined($name) ) {
+			if ( defined( $self->{ignore}{$name} ) ) {
+				push( @{ $to_return->{ignored} }, $name );
+			} else {
 				if ( $self->{ignore}{$name} ) {
 					push( @{ $to_return->{ignored} }, $name );
 					push( @{ $to_return->{results} }, 'IGNORED - ' . $name . ', ' . $status );
@@ -299,8 +299,8 @@ sub run {
 						);
 					} ## end if ( defined( $self->{status_mapping}{$status...}))
 				} ## end else [ if ( $self->{ignore}{$name} ) ]
-			} ## end if ( defined($status) && defined($name) )
-		} ## end else [ if ( defined( $self->{ignore}{$name} ) ) ]
+			} ## end else [ if ( defined( $self->{ignore}{$name} ) ) ]
+		} ## end if ( defined($status) && defined($name) )
 	} ## end foreach my $line (@output_split)
 
 	# check the config dir only if asked to

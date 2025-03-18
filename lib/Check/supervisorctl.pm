@@ -365,9 +365,15 @@ sub run {
 			$to_return->{config_dir_missing} = 1;
 			if ( $to_return->{exit} < $self->{config_dir_missing_val} ) {
 				$to_return->{exit} = $self->{config_dir_missing_val};
-				push( @{ $to_return->{results} }, $self->{val_to_string}{ $self->{config_dir_missing_val} } . ' - missing dir missing');
-			}
-		}
+				push(
+					@{ $to_return->{results} },
+					$self->{val_to_string}{ $self->{config_dir_missing_val} }
+						. ' - config dir,"'
+						. $self->{config_dir}
+						. '", missing'
+				);
+			} ## end if ( $to_return->{exit} < $self->{config_dir_missing_val...})
+		} ## end else [ if ( -d $self->{config_dir} ) ]
 	} ## end if ( $self->{config_check} )
 
 	return $to_return;

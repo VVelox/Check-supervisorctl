@@ -65,8 +65,8 @@ Initiates the object.
         default :: []
 
     - config_dir :: Config dir path.
-        default :: /usr/local/etc/supervisord/conf.d
-        default Linux :: /etc/supervisord/conf.d
+        default :: /usr/local/etc/supervisor/conf.d
+        default Linux :: /etc/supervisor/conf.d
 
 =cut
 
@@ -365,6 +365,7 @@ sub run {
 			$to_return->{config_dir_missing} = 1;
 			if ( $to_return->{exit} < $self->{config_dir_missing_val} ) {
 				$to_return->{exit} = $self->{config_dir_missing_val};
+				push( @{ $to_return->{results} }, $self->{val_to_string}{ $self->{config_dir_missing_val} } . ' - missing dir missing');
 			}
 		}
 	} ## end if ( $self->{config_check} )

@@ -81,7 +81,7 @@ pkg install p5-File-Slurp p5-App-cpanminus
 cpanm Check::supervisorctl
 ```
 
-##
+## Debian
 
 ```
 apt-get install libfile-slurp-perl cpanminus

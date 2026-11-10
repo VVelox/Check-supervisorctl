@@ -12,11 +12,11 @@ Check::supervisorctl - Check the status of supervisorctl to see if it is okay.
 
 =head1 VERSION
 
-Version 0.2.0
+Version 0.2.1
 
 =cut
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.2.1';
 
 # the statuses supervisorctl knows of
 my @STATUSES = ( 'stopped', 'starting', 'running', 'backoff', 'stopping', 'exited', 'fatal', 'unknown' );

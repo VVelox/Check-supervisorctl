@@ -5,7 +5,7 @@ Revision history for Check-supervisorctl
         - Add -L, and -l for use with -R, for adding configs that are not running.
         - Restarts and adds do not change the exit value.
 
-0.1.0   2026-11-02
+0.1.0   2026-11-02/13:30
         - Add Monitoring::Sneck::Checks::supervisorctl for running it in process via sneck.
         - supervisorctl status output that is not a item and status, such as supervisord being
           down, or supervisorctl not being runnable, is now a status_error, UNKNOWN by default,

@@ -1,5 +1,8 @@
 Revision history for Check-supervisorctl
 
+UNRELEASED
+        - t/check.t: use t/tmp/ instead of /tmp and only the fake supervisorctl in the path.
+
 0.2.0   2026-11-10/10:00
         - Add -R for restarting stopped, exited, fatal, and backoff items.
         - Add -L, and -l for use with -R, for adding configs that are not running.

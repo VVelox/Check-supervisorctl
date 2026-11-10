@@ -6,6 +6,9 @@ use Test::More;
 use File::Temp qw(tempdir);
 use Check::supervisorctl;
 
+# temp stuff goes in t/tmp/ and not /tmp, as /tmp may be noexec, which would break the fake supervisorctl
+mkdir("t/tmp");
+
 my $status = <<'EOF';
 foo                              RUNNING   pid 123, uptime 1 day, 0:00:01
 bar                              STARTING
@@ -50,7 +53,7 @@ $results = Check::supervisorctl->new( status_error_val => 2 )->run( status_outpu
 is( $results->{exit}, 2, 'status_error_val' );
 
 # config checking
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = tempdir( DIR => "t/tmp", CLEANUP => 1 );
 foreach my $config ( 'foo', 'bar', 'notrunning', 'ignoredconf', 'qux' ) {
 	open( my $fh, '>', $dir . '/' . $config . '.conf' ) or die($!);
 	close($fh);
@@ -174,13 +177,15 @@ is_deeply( \@commands, [], 'no reread if nothing to add' );
 ok( !eval { Check::supervisorctl->new( add_configs => 1 ); 1 }, 'add_configs requires config_check' );
 
 # the default command, via a fake supervisorctl in the path
-my $bin_dir = tempdir( CLEANUP => 1 );
+my $bin_dir = tempdir( DIR => "t/tmp", CLEANUP => 1 );
 open( my $fake_fh, '>', $bin_dir . '/supervisorctl' ) or die($!);
 print $fake_fh "#!/bin/sh\necho \"\$1 \$2\"\necho oops >&2\n";
 close($fake_fh);
 chmod( 0755, $bin_dir . '/supervisorctl' );
-{
-	local $ENV{PATH} = $bin_dir . ':' . $ENV{PATH};
+SKIP: {
+	# only the fake in the path, so a real supervisorctl is never ran in its place
+	local $ENV{PATH} = $bin_dir;
+	skip( "can not execute the fake supervisorctl in $bin_dir", 2 ) if !defined( `$bin_dir/supervisorctl 2> /dev/null` ) || $? != 0;
 	is_deeply(
 		[ Check::supervisorctl::_run_supervisorctl( 'start', 'a b;c' ) ],
 		[ 0, "start a b;c\noops\n" ],
